@@ -14,6 +14,7 @@ from .const import (
     CONF_PASSIVE_ENTITY,
     CONF_RESTORE_ON_RECONNECT,
     CONF_STEPSIZE_VALUE,
+    CONF_USE_INT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -38,6 +39,7 @@ def flow_schema(dps):
             vol.Coerce(float),
             vol.Range(min=0.0, max=1000000.0),
         ),
+        vol.Required(CONF_USE_INT): bool,
         vol.Required(CONF_RESTORE_ON_RECONNECT): bool,
         vol.Required(CONF_PASSIVE_ENTITY): bool,
         vol.Optional(CONF_DEFAULT_VALUE): str,
@@ -69,6 +71,10 @@ class LocaltuyaNumber(LocalTuyaEntity, NumberEntity):
         self._step_size = DEFAULT_STEP
         if CONF_STEPSIZE_VALUE in self._config:
             self._step_size = self._config.get(CONF_STEPSIZE_VALUE)
+
+        self._use_int = False
+        if CONF_USE_INT in self._config:
+            self._use_int = self._config.get(CONF_USE_INT)
 
         # Override standard default value handling to cast to a float
         default_value = self._config.get(CONF_DEFAULT_VALUE)
@@ -102,6 +108,7 @@ class LocaltuyaNumber(LocalTuyaEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
+        if self._use_int: value = int(value)
         await self._device.set_dp(value, self._dp_id)
 
     # Default value is the minimum value

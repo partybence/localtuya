@@ -183,6 +183,7 @@
                     "preset_set": "Conjunto de predefinições (opcional)",
                     "eco_dp": "Eco DP (opcional)",
                     "eco_value": "Valor eco (opcional)",
+                    "use_int": "Enviar valor como int em vez de float",
                     "heuristic_action": "Ativar ação heurística (opcional)"
                 }
             }
